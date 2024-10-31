@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">XSettingManager</string>
+
+
+    <string name="home">主页</string>
+    <string name="setting">设置</string>
+    <string name="about">关于</string>
+    <string name="home_title">App列表</string>
+    <string name="home_refresh">刷新</string>
+    <string name="home_hide_system_app">隐藏系统应用</string>
+    <string name="home_show_system_app">显示系统应用</string>
+
+</resources>
