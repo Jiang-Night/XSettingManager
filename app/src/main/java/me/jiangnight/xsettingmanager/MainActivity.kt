@@ -1,7 +1,9 @@
 package me.jiangnight.xsettingmanager
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -10,7 +12,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -18,7 +19,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -36,6 +36,7 @@ import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultA
 import com.ramcosta.composedestinations.rememberNavHostEngine
 import com.ramcosta.composedestinations.utils.isRouteOnBackStackAsState
 import com.ramcosta.composedestinations.utils.rememberDestinationsNavigator
+import com.topjohnwu.superuser.Shell
 import me.jiangnight.xsettingmanager.ui.screen.BottomBarDestination
 import me.jiangnight.xsettingmanager.ui.screen.NavGraphs
 import me.jiangnight.xsettingmanager.ui.theme.XSettingManagerTheme
@@ -43,11 +44,17 @@ import me.jiangnight.xsettingmanager.utils.LocalSnackbarHost
 
 
 class MainActivity : ComponentActivity() {
+
+
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         window.isNavigationBarContrastEnforced = false
+        Shell.cmd("su").exec()
+        val res = Shell.cmd("id").exec()
+        Log.d("Jiang","res-> " + res.out.toString())
 
         setContent {
             XSettingManagerTheme {
@@ -80,7 +87,7 @@ class MainActivity : ComponentActivity() {
                     CompositionLocalProvider(LocalSnackbarHost provides snackBarHostState) {
                         // 设置导航主机，使用 DestinationsNavHost 进行页面导航
                         DestinationsNavHost(
-                            modifier = Modifier.padding(paddingValues),
+                            modifier = Modifier.padding(0.dp),
                             navGraph = NavGraphs.root,
                             navController = navController,
                             engine = navHostEngine
@@ -99,12 +106,10 @@ private fun BottomBar(navController: NavController) {
     NavigationBar(tonalElevation = 8.dp) {
         BottomBarDestination.entries.forEach { destination ->
             val isCurrentDestOnBackStack by navController.isRouteOnBackStackAsState(destination.direction)
-
             NavigationBarItem(selected = isCurrentDestOnBackStack, onClick = {
                 if (isCurrentDestOnBackStack) {
                     navigator.popBackStack(destination.direction, false)
                 }
-
                 navigator.navigate(destination.direction) {
                     popUpTo(NavGraphs.root) {
                         saveState = true

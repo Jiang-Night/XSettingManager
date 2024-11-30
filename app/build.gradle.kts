@@ -26,6 +26,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -37,6 +38,7 @@ android {
     }
     buildFeatures {
         compose = true
+        aidl = true
     }
 
 }
@@ -50,19 +52,21 @@ dependencies {
 
 
     implementation(libs.com.google.accompanist.navigation.animation) //tab栏
-    implementation(libs.androidx.compose.material.icons.extended)
+    implementation(libs.androidx.compose.material.icons.extended) //图标
     implementation(libs.androidx.compose.material)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.runtime.livedata)
-    implementation(libs.io.coil.kt.coil.compose)
-
-//    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.io.coil.kt.coil.compose) //图片加载
+    implementation(libs.com.github.topjohnwu.libsu.service)//libsu
+    implementation(libs.dev.rikka.rikkax.parcelablelist)//序列化
 
     implementation(libs.compose.destinations.animations.core)
     ksp(libs.compose.destinations.ksp)
+
+
 
 
 

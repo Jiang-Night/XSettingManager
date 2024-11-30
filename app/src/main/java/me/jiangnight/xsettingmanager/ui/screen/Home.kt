@@ -3,7 +3,7 @@ package me.jiangnight.xsettingmanager.ui.screen
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -40,10 +40,12 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.launch
 import me.jiangnight.xsettingmanager.R
 import me.jiangnight.xsettingmanager.ui.component.ProvideMenuShape
 import me.jiangnight.xsettingmanager.ui.component.SearchAppBar
+import me.jiangnight.xsettingmanager.ui.screen.destinations.AppSettingScreenDestination
 import me.jiangnight.xsettingmanager.ui.viewmodel.HomeViewModel
 
 
@@ -51,7 +53,7 @@ import me.jiangnight.xsettingmanager.ui.viewmodel.HomeViewModel
 @RootNavGraph(start = true)
 @Destination
 @Composable
-fun HomeScreen() {
+fun HomeScreen(navigator: DestinationsNavigator) {
     val viewModel = viewModel<HomeViewModel>()
     val scope = rememberCoroutineScope()
 
@@ -77,7 +79,6 @@ fun HomeScreen() {
                             imageVector = Icons.Filled.MoreVert,
                             contentDescription = stringResource(R.string.setting)
                         )
-
                         ProvideMenuShape(RoundedCornerShape(10.dp)) {
                             DropdownMenu(expanded = showDropdown, onDismissRequest = {
                                 showDropdown = false
@@ -120,9 +121,11 @@ fun HomeScreen() {
                 .padding(innerPadding)
                 .pullRefresh(refreshState)
         ) {
-            LazyColumn(Modifier.fillMaxSize()) {
+            LazyColumn(Modifier.fillMaxWidth()) {
                 items(viewModel.appList, key = { it.packageName }) { app ->
-                    AppListItem(app)
+                    AppListItem(app = app){
+                        navigator.navigate(AppSettingScreenDestination(app))
+                    }
                 }
             }
             PullRefreshIndicator(
@@ -135,15 +138,18 @@ fun HomeScreen() {
 }
 
 @Composable
-fun AppListItem(app: HomeViewModel.AppInfo) {
+fun AppListItem(app: HomeViewModel.AppInfo,onClickListener : () -> Unit) {
+    var switchState by remember { mutableStateOf(false) }
+    val context = LocalContext.current
     ListItem(
-        modifier = Modifier.clickable(onClick = {
-            // Handle click event if needed
-        }),
+        modifier = Modifier.clickable(onClick = onClickListener),
         headlineContent = { Text(app.label) },
         leadingContent = {
             AsyncImage(
-                model = app.appIcon,
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(LocalContext.current.packageManager.getApplicationIcon(app.packageInfo.packageName))
+                    .crossfade(true)
+                    .build(),
                 contentDescription = app.label,
                 modifier = Modifier
                     .padding(4.dp)
@@ -158,7 +164,13 @@ fun AppListItem(app: HomeViewModel.AppInfo) {
             }
         },
         trailingContent = {
-            // 右侧放置开关或其他控件
+//            Switch(
+//                checked = switchState,
+//                onCheckedChange = { isChecked ->
+//                    switchState = isChecked
+//                    onSwitchChange(isChecked) // 回调开关状态
+//                }
+//            )
         },
     )
 }

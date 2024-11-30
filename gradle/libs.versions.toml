@@ -9,7 +9,8 @@ composeBom = "2024.04.01"
 accompanist = "0.36.0"
 compose-destination = "1.11.7"
 ksp = "2.0.21-1.0.25"
-
+libsu = "6.0.0"
+parcelablelist = "2.0.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -27,6 +28,11 @@ androidx-compose-material = { group = "androidx.compose.material", name = "mater
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 #图片处理
 io-coil-kt-coil-compose = { group = "io.coil-kt", name = "coil-compose", version = "2.7.0" }
+#libsu
+com-github-topjohnwu-libsu-service = { group = "com.github.topjohnwu.libsu", name = "service", version.ref = "libsu" }
+#序列化传输
+dev-rikka-rikkax-parcelablelist = { module = "dev.rikka.rikkax.parcelablelist:parcelablelist", version.ref = "parcelablelist" }
+
 
 
 
